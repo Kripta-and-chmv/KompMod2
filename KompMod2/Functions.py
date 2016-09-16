@@ -42,14 +42,21 @@ class Tests:
     def FindPeriod(sequence):
         """На вход подаётся список-последовательность. 
         Возвращает число-период"""
-        period=0
+        def FirstInsertion(seq):#ищет первое вхождение последовательности из первых трёх элементов seq в seq
+            a=seq[0:3]
+            for i in range(3, len(seq)):
+                if (a[0]==seq[i]):
+                    if(i+1<len(seq) and i+2<len(seq)):                    
+                        if(a[1]==seq[i+1] and a[2]==seq[i+2]):
+                            i-=1#отнимаем единицу, т.к. i указывает на начало второго периода
+                                #а должен на конец первого
+                            break
+            return i
+
+        period = FirstInsertion(sequence)+1     
         
-        a=sequence[0:3]
-        for i in range(3, len(sequence)):
-            if (a[0]==sequence[i]):
-                if(a[1]==sequence[i+1] and a[2]==sequence[i+2]):
-                    period=i
-                    break
+        if(period == len(sequence)):
+            period = FirstInsertion(list(reversed(sequence)))+1
 
         return period
 
