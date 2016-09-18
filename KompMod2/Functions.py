@@ -60,6 +60,6 @@ class Tests:
 
         return period
 
-    def Test1_Random():
-        min=0
-        max=0
+    def Test1_Random(period):
+        U=1.96
+       
