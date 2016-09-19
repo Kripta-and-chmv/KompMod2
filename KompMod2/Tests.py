@@ -100,7 +100,7 @@ class Tests:
             intervals = FindFreqIntervals(freq, amount)
             P = 1 / intervalsAmount
             for i in range(len(freq)):
-                if(P >= intervals[0][i] and P <= intervals[1][i]):
+                if(intervals[0][i] <= P <= intervals[1][i]):
                     amountOfHits += 1
             return amountOfHits
         #################
@@ -115,7 +115,7 @@ class Tests:
             Mk = mod / 2
             expValueInterval = FindExpValInterval(expValue, variance, amount)
             hit = False
-            if(Mk >= expValueInterval[0] and Mk <= expValueInterval[1]):
+            if(expValueInterval[0] <= Mk <= expValueInterval[1]):
                 hit=True
             
             return hit
@@ -129,7 +129,7 @@ class Tests:
             Dk = mod ** 2 /12
             varianceInterval=FindVarianceInterval(variance, amount, alpha)
             hit=False
-            if(Dk >= varianceInterval[0] and Dk <= varianceInterval[1]):
+            if(varianceInterval[0] <= Dk <= varianceInterval[1]):
                 hit=True
             return hit
         #################
