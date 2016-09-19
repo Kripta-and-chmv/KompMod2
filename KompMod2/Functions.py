@@ -65,6 +65,74 @@ class Tests:
         U=1.96
        
     def Test_2(seq, m):
+        
+        def FindExpValue(sequence):
+            expValue=0.0
+            for i in range(len(sequence)):
+                expValue+=sequence[i]
+            expValue/=len(sequence)
+            return expValue     
+        ##################
+        def FindFrequency(n):
+            frequency=[0,0,0,0,0,0,0,0,0,0]
+            for i in range(0, n):
+                if(seq[i]<intervals[1]):
+                    frequency[0]+=1/n
+                elif(seq[i]<intervals[2]):
+                    frequency[1]+=1/n
+                elif(seq[i]<intervals[3]):
+                    frequency[2]+=1/n
+                elif(seq[i]<intervals[4]):
+                    frequency[3]+=1/n
+                elif(seq[i]<intervals[5]):
+                    frequency[4]+=1/n
+                elif(seq[i]<intervals[6]):
+                    frequency[5]+=1/n
+                elif(seq[i]<intervals[7]):
+                    frequency[6]+=1/n
+                elif(seq[i]<intervals[8]):
+                    frequency[7]+=1/n
+                elif(seq[i]<intervals[9]):
+                    frequency[8]+=1/n
+                elif(seq[i]<intervals[10]):
+                    frequency[9]+=1/n
+            return frequency   
+        ##################
+        def DrawHistogram(frequency):
+            
+            width=2
+            plt.bar(intervals[:10], frequency, width)
+            plt.xticks(intervals)
+            plt.show()
+        ##################
+        def FindVariance(sequence, expValue):
+            variance=0.0
+            for i in range(len(sequence)):
+                variance+=(sequence[i]-expValue)**2
+            variance/=len(sequence)-1
+            return variance
+        #################
+        def FreqInterval(freq, n):
+            freqIntervals=[[],[]]
+            for i in range(len(freq)):
+                k=(U/K)*math.sqrt((K-1)/n)
+                freqInterval[0].append(freq[i]-k)
+                freqInterval[1].append(freq[i]+k)
+            return freqIntervals
+        #################
+        def ExpValInterval(expValue, variance, n):
+            expValInterval=[]
+            k=U*math.sqrt(variance)/matg.sqrt(n)
+            expValInterval.append(expValue-k)
+            expValInterval.append(expValue+k)
+            return expValInterval
+        #################
+        def VarianceInterval(expValue, variance, n):
+            varianceInterval=[]
+            
+            return varianceInterval
+        #################
+        U=1.96
         K=10
         #разбиваем на K интервалов
         intervals=[]
@@ -75,40 +143,16 @@ class Tests:
             intervals.append(lastPoint)
             lastPoint+=interLength
         intervals.append(m)
-        ###################
-
-        n=40
-
-        frequency=[0,0,0,0,0,0,0,0,0,0]
-        for i in range(0, 40):
-            if(seq[i]<intervals[1]):
-                frequency[0]+=1/40
-            elif(seq[i]<intervals[2]):
-                frequency[1]+=1/40
-            elif(seq[i]<intervals[3]):
-                frequency[2]+=1/40
-            elif(seq[i]<intervals[4]):
-                frequency[3]+=1/40
-            elif(seq[i]<intervals[5]):
-                frequency[4]+=1/40
-            elif(seq[i]<intervals[6]):
-                frequency[5]+=1/40
-            elif(seq[i]<intervals[7]):
-                frequency[6]+=1/40
-            elif(seq[i]<intervals[8]):
-                frequency[7]+=1/40
-            elif(seq[i]<intervals[9]):
-                frequency[8]+=1/40
-            elif(seq[i]<intervals[10]):
-                frequency[9]+=1/40
-
-        width=2
-
-        plt.bar(intervals[:10], frequency, width)
-        plt.xticks(intervals)
-        plt.show()
-
-        expValue40 = 0
+        
+        freq40=FindFrequency(40)
+        DrawHistogram(freq40)
+        expValue40=FindExpValue(seq[:40])
+        variance40=FindVariance(seq[:40], expValue40)
+        
+        freq100=FindFrequency(100)
+        DrawHistogram(freq100)
+        expValue100=FindExpValue(seq[:100])
+        variance100=FindVariance(seq[:100], expValue100)
 
 
         return intervals
