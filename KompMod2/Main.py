@@ -1,20 +1,29 @@
-import Functions
+from Tests import *
+from SeqGen import *
+import scipy
+import scipy.stats
 
-test1 = Functions.Generator()
+def RandomCoeff(fileName):
+    with open(fileName, 'w') as f:
+        for i in range(0, 3):
+            f.write(str(random.randrange(1, 100)) + ' ')
+        f.write(str(random.randrange(1, 100)))
+
+
+gen = SeqGenerator()
 
 while True:
 
-    test1.Reading('input.txt')
-    test1.GenerateSequence(1000, 1)
-    sequence=test1.GetSequence()
+    gen.Reading('input.txt')
+    gen.GenerateSequence(2000, 1)
+    sequence=gen.GetSequence()
 
-    period = Functions.Tests.FindPeriod(sequence)
+    period = Tests.FindPeriod(sequence)
     print(period)
     if (period<100):
-        Functions.RandomCoeff('input.txt')
+        RandomCoeff('input.txt')
     else:
-        break
+        break 
 
-
-intervals = Functions.Tests.Test_2(sequence, test1.m)
-print (intervals)
+valiable = Tests.Test_2(sequence, gen.mod, 0.05, 10)
+print (valiable)
