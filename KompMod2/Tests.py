@@ -24,10 +24,20 @@ class Tests:
         period = length-i     
         return period
 
-    def Test1_Random(period, a):
-        U=scipy.stats.norm.ppf(1-a/2)       
+    def Test1_Random(sequence, alpha):
+        U=scipy.stats.norm.ppf(1 - alpha / 2)
+        delta = U  * math.sqrt(len(sequence)) / 2
+        inteval = []
+        interval.append(Q - delta)
+        interval.append(Q + delta)
+        
+        hit=False
+        if(interval[0] <= len(sequence)/2 <= interval[1]):
+            hit = True
 
-    def Test_2(seq, mod, alpha, intervalsAmount):                
+        return hit
+
+    def Test_2(seq, mod, alpha, intervalsAmount):
         def CreateIntervals(mod, amount):
             intervals = []
             intervals.append(0)
@@ -158,3 +168,19 @@ class Tests:
         variananceGrade100 = EvaluateVariance(variance100, 100, alpha, mod)
 
         return expValueGrade40 and variananceGrade40 and expValueGrade100 and variananceGrade100
+
+    def Anderson_Darling_test(sequence, distribution):
+        #distribition = 'norm'
+        #sequence = []
+        #sequence = copy(_sequence)
+        #sequence.sort()
+
+        #addition = 0
+        #length = len(sequence)
+        #for i in range(1, lenght+1):
+        #    addition += (2 * i - 1) * math.log10(scipy.stats.norm.pdf(sequence[i])) / (2 * lenght)
+        #    addition += (1 - (2 * i - 1) / (2 * lenght)) * math.log10(1 - scipy.stats.norm.pdf(sequence[i]))
+
+        #S = - len(sequence) - 2 * addition
+
+        return scipy.stats.anderson(sequence, distribution)

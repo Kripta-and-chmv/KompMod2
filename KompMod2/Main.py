@@ -27,3 +27,6 @@ while True:
 
 valiable = Tests.Test_2(sequence, gen.mod, 0.05, 10)
 print (valiable)
+
+anderson = Tests.Anderson_Darling_test(sequence, 'norm')
+print(anderson)
