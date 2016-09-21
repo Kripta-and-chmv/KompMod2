@@ -25,7 +25,12 @@ class Tests:
         return period
 
     def Test1_Random(sequence, alpha):
-        U=scipy.stats.norm.ppf(1 - alpha / 2)
+        Q = 0
+        for i in range(len(sequence)-1):
+            if(sequence[i] > sequence[i + 1]):
+                Q += 1
+        
+        U = scipy.stats.norm.ppf(1 - alpha / 2)
         delta = U  * math.sqrt(len(sequence)) / 2
         inteval = []
         interval.append(Q - delta)
@@ -182,5 +187,11 @@ class Tests:
         #    addition += (1 - (2 * i - 1) / (2 * lenght)) * math.log10(1 - scipy.stats.norm.pdf(sequence[i]))
 
         #S = - len(sequence) - 2 * addition
-
-        return scipy.stats.anderson(sequence, distribution)
+        criticalValue = 2.4924
+        
+        andersonTest = scipy.stats.anderson(sequence, 'norm')
+                
+        hit = False
+        if (andersonTest.statistic <= criticalValue):
+            hit = True
+        return hit

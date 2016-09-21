@@ -4,6 +4,7 @@ import scipy
 import scipy.stats
 
 def RandomCoeff(fileName):
+    random.seed()
     with open(fileName, 'w') as f:
         for i in range(0, 3):
             f.write(str(random.randrange(1, 100)) + ' ')
@@ -24,9 +25,10 @@ while True:
         RandomCoeff('input.txt')
     else:
         break 
+       
+
 
 valiable = Tests.Test_2(sequence, gen.mod, 0.05, 10)
 print (valiable)
 
 anderson = Tests.Anderson_Darling_test(sequence, 'norm')
-print(anderson)
