@@ -26,9 +26,11 @@ while True:
     else:
         break 
        
+leng = len(sequence)
+t = Tests.Test_3(sequence, gen.mod, 0.05, 4, 16)
 
+valiable40 = Tests.Test_2(sequence[:40], gen.mod, 0.05, 10)
+valiable100 = Tests.Test_2(sequence[:100], gen.mod, 0.05, 10)
+print (valiable40 and valiable100)
 
-valiable = Tests.Test_2(sequence, gen.mod, 0.05, 10)
-print (valiable)
-
-anderson = Tests.Anderson_Darling_test(sequence, 'norm')
+anderson = Tests.Anderson_Darling_test(sequence, gen.mod)

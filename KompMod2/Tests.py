@@ -24,7 +24,7 @@ class Tests:
         period = length-i     
         return period
 
-    def Test1_Random(sequence, alpha):
+    def Test_1(sequence, alpha):
         Q = 0
         for i in range(len(sequence)-1):
             if(sequence[i] > sequence[i + 1]):
@@ -32,7 +32,7 @@ class Tests:
         
         U = scipy.stats.norm.ppf(1 - alpha / 2)
         delta = U  * math.sqrt(len(sequence)) / 2
-        inteval = []
+        interval = []
         interval.append(Q - delta)
         interval.append(Q + delta)
         
@@ -58,7 +58,7 @@ class Tests:
             """находит частоту попаданий элементов из sequence в интервалы intervals"""
             frequency=[0,0,0,0,0,0,0,0,0,0]
 
-            for i in range(0,amount):
+            for i in range(0, amount):
                 if(sequence[i] < intervals[1]):
                     frequency[0] += 1 / amount
                 elif(sequence[i] < intervals[2]):
@@ -154,44 +154,81 @@ class Tests:
 
         intervals=CreateIntervals(mod, intervalsAmount)
         
-        freq40 = FindFrequency(40, intervals, seq)
-        DrawHistogram(freq40, intervals, mod / intervalsAmount)
-        expValue40 = FindExpValue(seq[:40])
-        variance40 = FindVariance(seq[:40], expValue40)
+        length = len(seq)
+
+        freq = FindFrequency(length, intervals, seq)
+        DrawHistogram(freq, intervals, mod / intervalsAmount)
+        expValue = FindExpValue(seq)
+        variance = FindVariance(seq, expValue)
         
-        freq100=FindFrequency(100, intervals, seq)
-        DrawHistogram(freq100, intervals, mod / intervalsAmount)
-        expValue100 = FindExpValue(seq[:100])
-        variance100 = FindVariance(seq[:100], expValue100)
 
-        freqGrade40 = EvaluateFreq(freq40, 40)
-        expValueGrade40 = EvaluateExpValue(expValue40, variance40, 40, mod)
-        variananceGrade40 = EvaluateVariance(variance40, 40, alpha, mod)
+        freqGrade = EvaluateFreq(freq, length)
+        expValueGrade = EvaluateExpValue(expValue, variance, length, mod)
+        variananceGrade = EvaluateVariance(variance, length, alpha, mod)
 
-        freqGrade100 = EvaluateFreq(freq100, 100)
-        expValueGrade100 = EvaluateExpValue(expValue100, variance100, 100, mod)
-        variananceGrade100 = EvaluateVariance(variance100, 100, alpha, mod)
+        return expValueGrade and variananceGrade
 
-        return expValueGrade40 and variananceGrade40 and expValueGrade100 and variananceGrade100
+    def Test_3(seq, mod, alpha, subseqsAmount, intervalsamount):
+        def MakingSubseqs(n):
+            t = int((n-1)/subseqsAmount)
+            seqArray = []
+            for i in range(subseqsAmount):
+                s = []
+                for j in range(t+1):
+                    s.append(seq[j*subseqsAmount + i])
+                seqArray.append(s)
+            return seqArray
 
-    def Anderson_Darling_test(sequence, distribution):
-        #distribition = 'norm'
-        #sequence = []
-        #sequence = copy(_sequence)
-        #sequence.sort()
+        seqArray40 = MakingSubseqs(40)
+        seqArray100 = MakingSubseqs(100)
+        hit_Test1_40 = True
+        hit_Test1_100 = True
+        hit_Test2_40 = True
+        hit_Test2_100 = True
 
-        #addition = 0
-        #length = len(sequence)
-        #for i in range(1, lenght+1):
-        #    addition += (2 * i - 1) * math.log10(scipy.stats.norm.pdf(sequence[i])) / (2 * lenght)
-        #    addition += (1 - (2 * i - 1) / (2 * lenght)) * math.log10(1 - scipy.stats.norm.pdf(sequence[i]))
+        for i in range(len(seqArray40)):
+            if (Tests.Test_1(seqArray40[i], alpha) == False):
+                hit_Test1_40 = False
+            if(Tests.Test_2(seqArray40[i], mod, alpha, intervalsamount) == False):
+                hit_Test2_40 = False
 
-        #S = - len(sequence) - 2 * addition
+        for i in range(len(seqArray100)):
+            if (Tests.Test_1(seqArray100[i], alpha) == False):
+                hit_Test1_40 = False
+            if(Tests.Test_2(seqArray100[i], mod, alpha, intervalsamount) == False):
+                hit_Test2_40 = False
+
+        return hit_Test1_40 and hit_Test1_100 and hit_Test2_40 and hit_Test2_100
+
+    def Anderson_Darling_test(_sequence, mod):
+        def UniformDistrFunc(x, mod):
+            a = 0
+            b = mod
+            if (x < a):
+                return 0
+            elif (a <= x < b):
+                return (x - a) / (b - a)
+            elif (x >= b):
+                return 1
+
+        sequence = []
+        sequence = copy.copy(_sequence)
+        sequence.sort()
+
+        addition = 0
+        length = len(sequence)
+
+        for i in range(1, length + 1):
+            F = UniformDistrFunc(sequence[i - 1], mod)
+            addition += (2 * i - 1) * math.log10(F) / (2 * length)
+            addition += (1 - (2 * i - 1) / (2 * length)) * math.log10(1 - F)
+
+        S = -len(sequence) - 2 * addition
         criticalValue = 2.4924
-        
-        andersonTest = scipy.stats.anderson(sequence, 'norm')
-                
+
         hit = False
-        if (andersonTest.statistic <= criticalValue):
+
+        if (S <= criticalValue):
             hit = True
+
         return hit
