@@ -250,8 +250,8 @@ class Tests:
 
         for i in range(1, length + 1):
             F = UniformDistrFunc(sequence[i - 1], mod)
-            addition += (2 * i - 1) * math.log10(F) / (2 * length)
-            addition += (1 - (2 * i - 1) / (2 * length)) * math.log10(1 - F)
+            addition += (2 * i - 1) * math.log(F) / (2 * length)
+            addition += (1 - (2 * i - 1) / (2 * length)) * math.log(1 - F)
 
         S = -len(sequence) - 2 * addition
         criticalValue = 2.4924
@@ -262,3 +262,6 @@ class Tests:
             hit = True
 
         return hit
+
+    def ChiSqr_Test(sequence):
+        intervalsAmount = 5 * math.log10(len(sequence))
