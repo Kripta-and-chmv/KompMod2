@@ -48,8 +48,10 @@ def Test_1(sequence, alpha):
     hit=False
     if(interval[0] <= len(sequence)/2 <= interval[1]):
         hit = True
-
-    return hit
+    
+    out = [Q, len(sequence) / 2, interval]
+    
+    return hit, out
 
 def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph):
     """Подаётся последоватеьность seq, mod - размерность алфавита,
@@ -89,6 +91,9 @@ def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph):
         width = intervals[len(intervals)-1] / (len(intervals) - 1)
 
         plt.bar(intervals[:len(intervals) - 1], frequency, width)
+        plt.title('Frecuency Histogram')
+        plt.xlabel('intervals')
+        plt.ylabel('relative frequency')
         plt.xticks(intervals)
         plt.show()
     ##################
@@ -131,8 +136,10 @@ def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph):
         for i in range(len(freq)):
             if(intervals[0][i] <= P <= intervals[1][i]):
                 amountOfHits += 1
+        
+        out = [intervals, P]        
 
-        return amountOfHits
+        return amountOfHits, out
     #################
     def EvaluateExpValue(expValue, variance, seqLength, mod, U):
         """Принимает мат ожидание expValue, дисперсию variance, длину выборки seqLength, размер алфавита mod, квантиль U.
@@ -152,7 +159,9 @@ def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph):
         if(expValueInterval[0] <= Mk <= expValueInterval[1]):
             hit=True
             
-        return hit
+        out = [expValueInterval, Mk]
+
+        return hit, out
     #################
     def EvaluateVariance(variance, seqLength, alpha, mod):
         """принимает дисперсию variance, длину выборки sqeLength, уровень значимости alpha, размер алфавита mod.
@@ -170,7 +179,10 @@ def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph):
         hit=False
         if(varianceInterval[0] <= Dk <= varianceInterval[1]):
             hit=True
-        return hit
+    
+        out = [varianceInterval, Dk]
+
+        return hit, out
     #################
 
     #вычисляем квантиль уровня 1 - alpha/2 нормального распределения с мат. ожид. 0 и среднеквадратич. отклонением 1
@@ -188,11 +200,13 @@ def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph):
     variance = FindVariance(seq, expValue)
         
 
-    freqGrade = EvaluateFreq(freq, seqLength, U, intervalsAmount)
-    expValueGrade = EvaluateExpValue(expValue, variance, seqLength, mod, U)
-    variananceGrade = EvaluateVariance(variance, seqLength, alpha, mod)
+    freqGrade, outFr = EvaluateFreq(freq, seqLength, U, intervalsAmount)
+    expValueGrade, outEx = EvaluateExpValue(expValue, variance, seqLength, mod, U)
+    variananceGrade, outVar = EvaluateVariance(variance, seqLength, alpha, mod)
 
-    return expValueGrade and variananceGrade
+    out = [outFr, outEx, outVar]
+
+    return expValueGrade and variananceGrade, out
 
 def Test_3(seq, mod, alpha, subseqsAmount, intervalsAmount):
     """Принимает выборку seq, размер алфавита mod, уровень значимости alpha, количество подпоследовательностей subseqAmount,
@@ -206,7 +220,7 @@ def Test_3(seq, mod, alpha, subseqsAmount, intervalsAmount):
         t = int((seqLength - 1) / subseqsAmount)
         seqArray = []
 
-        for i in range(subseqsAmount, subseqsAmount):
+        for i in range(subseqsAmount):
             s = []
             for j in range(t + 1):
                 s.append(seq[j * subseqsAmount + i])
@@ -216,14 +230,22 @@ def Test_3(seq, mod, alpha, subseqsAmount, intervalsAmount):
     seqArray = MakingSubseqs(seq, subseqsAmount)
     hit_Test1 = True
     hit_Test2 = True
-
+    outsTest1 = []
+    outsTest2 = []  
     for i in range(len(seqArray)):
-        if (Test_1(seqArray[i], alpha) == False):
+        hit, out = Test_1(seqArray[i], alpha)
+        outsTest1.append(out)
+        if (hit == False):
             hit_Test1 = False
-        if (Test_2(seqArray[i], mod, alpha, intervalsAmount, False) == False):
+
+        hit, out = Test_2(seqArray[i], mod, alpha, intervalsAmount, False)
+        outsTest2.append(out)
+        if (hit == False):
             hit_Test2 = False
 
-    return hit_Test1 and  hit_Test2
+    outGlobal = [outsTest1, outsTest2]
+
+    return hit_Test1 and  hit_Test2, outGlobal
 
 def Anderson_Darling_test(_sequence, mod):
     """Тест андерсона на равномерное распределение.
@@ -250,6 +272,8 @@ def Anderson_Darling_test(_sequence, mod):
 
     for i in range(1, length + 1):
         F = UniformDistrFunc(sequence[i - 1], mod)
+        if(F == 0):
+            return False, [999999999999, 2.4924]
         addition += (2 * i - 1) * math.log(F) / (2 * length)
         addition += (1 - (2 * i - 1) / (2 * length)) * math.log(1 - F)
 
@@ -261,7 +285,9 @@ def Anderson_Darling_test(_sequence, mod):
     if (S <= criticalValue):
         hit = True
 
-    return hit
+    out = [S, criticalValue]
+    
+    return hit, out
 
 def ChiSqr_Test(sequence, mod):
     """Нв вход подаются выюорка sequence, размерность алфавита mod.
@@ -299,12 +325,27 @@ def ChiSqr_Test(sequence, mod):
             probabil.append((intervals[i + 1] - intervals[i]) / (b - a))
         return probabil
 
+    def DrawHistogram(frequency, intervals):
+        """Рисует гистограмму частот frequency на интервалах intervals"""
+
+        #ширина стобца - размер алфавита делаится на количество интервалов
+        width = intervals[len(intervals)-1] / (len(intervals) - 1)
+
+        plt.bar(intervals[:len(intervals) - 1], frequency, width)
+        plt.title('Chi2 Histogram')
+        plt.xlabel('intervals')
+        plt.ylabel('hits amount')
+        plt.xticks(intervals)
+        plt.show()
+
     intervalsAmount = int(5 * math.log10(len(sequence)))
 
     intervals = CreateIntervals(mod, intervalsAmount)
     hitsAmount = FindHitsAmount(intervals, sequence)
 
     probabil = FindIntervalsPorbability(intervals, 0, mod)
+    
+    DrawHistogram(hitsAmount, intervals)    
 
     #вычисляется статистика
     addition = 0
@@ -316,4 +357,7 @@ def ChiSqr_Test(sequence, mod):
     hit = False 
     if(S <= S_crit):
         hit = True
-    return hit
+
+    out = [S, S_crit]
+
+    return hit, out
