@@ -27,10 +27,19 @@ while True:
         break 
        
 leng = len(sequence)
-t = Tests.Test_3(sequence, gen.mod, 0.05, 4, 16)
 
-valiable40 = Tests.Test_2(sequence[:40], gen.mod, 0.05, 10)
-valiable100 = Tests.Test_2(sequence[:100], gen.mod, 0.05, 10)
-print (valiable40 and valiable100)
+Test1valiable = Tests.Test_1(sequence[:period], 0.05)
+print(Test1valiable)
+
+Test2valiable40 = Tests.Test_2(sequence[:40], gen.mod, 0.05, 10, True)
+Test2valiable100 = Tests.Test_2(sequence[:100], gen.mod, 0.05, 10, True)
+print (Test2valiable40 and Test2valiable100)
+
+Test3valiable40 = Tests.Test_3(sequence[:40], gen.mod, 0.05, 4, 16)
+Test3valiable100 = Tests.Test_3(sequence[:100], gen.mod, 0.05, 4, 16)
+print (Test3valiable40 and Test3valiable100)
+
+
 
 anderson = Tests.Anderson_Darling_test(sequence, gen.mod)
+print(anderson)
