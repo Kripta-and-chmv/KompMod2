@@ -1,8 +1,11 @@
 import Tests
 from SeqGen import *
 import scipy
+import math
+import sympy
 import scipy.stats
 import random
+
 
 def RandomCoeff(fileName):
     random.seed()
@@ -19,8 +22,8 @@ while True:
     gen.Reading('input.txt')
     gen.GenerateSequence(1000, 1)
     sequence=gen.GetSequence()
-    for i in range (len(sequence)):
-        sequence[i] = random.randrange(0, gen.mod)
+    #for i in range (len(sequence)):
+    #    sequence[i] = random.randrange(0, gen.mod)
 
     period = Tests.FindPeriod(sequence)
     with open('seq.txt', 'w') as f:
@@ -67,7 +70,7 @@ Test3valiable100, outTest3_100 = Tests.Test_3(sequence[len(sequence) - 100:], ge
 
 anderson, outAnderson = Tests.Anderson_Darling_test(sequence[len(sequence) - period:], gen.mod)
 
-chi2, outChi2 = Tests.ChiSqr_Test(sequence[len(sequence) - period:], gen.mod)
+chi2, outChi2 = Tests.ChiSqr_Test(sequence[len(sequence) - period:], gen.mod, 0.05, int(5 * math.log10(len(sequence))))
 
 s = list(reversed(sequence))
 ##########################ГОВНОКОД################################################
@@ -97,7 +100,7 @@ with open('parametres.txt', 'w') as f:
     f.write('\t' + '100: ' + 'дисперсия: ' + str(outTest2_100[2][1]) + '. Интервал: ' + str(outTest2_100[2][0][0]) + ' - ' + str(outTest2_100[2][0][1]) + '\n')
     f.write('\t' + '100:' + ' вероятность: ' + str(outTest2_100[0][1]) + '\n\t интервалы: \n')    
     for i in range(intervalsAmount): 
-        f.write('\t\t' + str(outTest2_40[0][0][0][i]) + ' - ' + str(outTest2_40[0][0][1][i]) + '\n')    
+        f.write('\t\t' + str(outTest2_100[0][0][0][i]) + ' - ' + str(outTest2_100[0][0][1][i]) + '\n')    
     
     f.write('\nТест Андерсона: ' + str(anderson) + '\n')
     f.write('\t статистика: ' + str(outAnderson[0]) + '\n')

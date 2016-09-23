@@ -2,6 +2,7 @@ import math
 import numpy
 import copy
 import random
+import sympy
 import scipy
 import scipy.stats
 import matplotlib.pyplot as plt
@@ -289,7 +290,7 @@ def Anderson_Darling_test(_sequence, mod):
     
     return hit, out
 
-def ChiSqr_Test(sequence, mod):
+def ChiSqr_Test(sequence, mod, alpha, intervalsAmount):
     """Нв вход подаются выюорка sequence, размерность алфавита mod.
        Возвращается значение bool - результат прохождения теста"""
     def CreateIntervals(mod, intervalsAmount):
@@ -338,8 +339,6 @@ def ChiSqr_Test(sequence, mod):
         plt.xticks(intervals)
         plt.show()
 
-    intervalsAmount = int(5 * math.log10(len(sequence)))
-
     intervals = CreateIntervals(mod, intervalsAmount)
     hitsAmount = FindHitsAmount(intervals, sequence)
 
@@ -352,6 +351,16 @@ def ChiSqr_Test(sequence, mod):
     for i in range(intervalsAmount):
         addition += (hitsAmount[i] / len(sequence) - probabil[i]) ** 2 / probabil[i]
     S = len(sequence) * addition
+
+    x = sympy.Symbol('x')
+    
+    r = 5
+
+    Schi2 = sympy.integrate(x ** (r / 2 - 1) * sympy.exp(-x / 2),  (x, S, sympy.oo)) / (2 ** (r / 2) * math.gamma(int(r / 2)))
+
+    hitChi2 = False
+    if (Schi2 > alpha):
+        hitChi2 = True
 
     S_crit = 18.307
     hit = False 
