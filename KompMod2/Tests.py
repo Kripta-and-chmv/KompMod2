@@ -35,10 +35,10 @@ def Test_1(sequence, alpha, wfile):
         """В файл wfile записывается размер выборки length, успешность прохождения теста hit, 
            мат ожидание length/2 и доверительный интервал interval"""
         wfile.write('============================== Тест 1 ==============================\n\n')
-        wfile.write('Размер выборки: ' + str(length) + '\n')
-        wfile.write('Успешность прохождения: ' + str(hit) + '\n')
-        wfile.write('Математическо ожидание: ' + str(length / 2) + '\n')
-        wfile.write('Доверительный интервал: [ ' + str(interval[0]) + ', ' + str(interval[1]) + ' ]\n\n')
+        wfile.write('Размер выборки: %s\n' % (length))
+        wfile.write('Успешность прохождения: %s\n' % (hit))
+        wfile.write('Математическо ожидание: %s\n' % (length / 2))
+        wfile.write('Доверительный интервал: [%s, %s]\n\n' % (interval[0], interval[1]))
     #Q - оценка количества перестановок
     Q = 0        
     for i in range(len(sequence)-1):
@@ -207,21 +207,21 @@ def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph, wfile):
            теоретическая дисперсия, 
            доверительный интервал для дисперсии."""
         wfile.write('============================== Тест 2 ==============================\n\n')
-        wfile.write('Размер выборки: ' + str(length) + '\n')
-        wfile.write('Количество интервалов: ' + str(intervalsAmount) + '\n')
-        wfile.write('Количество попаданий теор частоты в интервалы: ' + str(hitsAmount) + '\n')
-        wfile.write('Теоретическая частота попаданий: ' + str(teorFreq) + '\n')
+        wfile.write('Размер выборки: %s\n' % (length))
+        wfile.write('Количество интервалов: %s\n' % (intervalsAmount))
+        wfile.write('Количество попаданий теор частоты в интервалы: %s\n' % (hitsAmount))
+        wfile.write('Теоретическая частота попаданий: %s\n' % (teorFreq))
         wfile.write('Доверительный интервалы для каждой вычесленной частоты: \n')
         for i in range(intervalsAmount):
-            wfile.write('\t[ ' + str(freqInterv[0][i]) + ', ' + str(freqInterv[1][i]) + ' ]\n')
+            wfile.write('\t[%s, %s]\n' % (freqInterv[0][i], freqInterv[1][i]))
 
-        wfile.write('Попадание теоретич. математическое ожидание в доверительный интервал: ' + str(expVhit) + '\n')
-        wfile.write('Теоретическое математическое ожидание: ' + str(teorexpV) + '\n')
-        wfile.write('Доверительный интервал для мат ожидания: [ ' + str(expVinterval[0]) + ', ' + str(expVinterval[1]) + ' ]\n\n')
+        wfile.write('Попадание теоретич. математическое ожидание в доверительный интервал: %s\n' % (expVhit))
+        wfile.write('Теоретическое математическое ожидание: %s\n' % (teorexpV))
+        wfile.write('Доверительный интервал для мат ожидания: [%s, %s]\n\n' % (expVinterval[0], expVinterval[1]))
 
-        wfile.write('Попадание теоретич. дисперсии в доверительный интервал: ' + str(varHit) + '\n')
-        wfile.write('Теоретическая дисперсия: ' + str(teorVar) + '\n')
-        wfile.write('Доверительный интервал для дисперсии: [ ' + str(varInterval[0]) + ', ' + str(varInterval[1]) + ' ]\n\n')
+        wfile.write('Попадание теоретич. дисперсии в доверительный интервал: %s\n' % (varHit))
+        wfile.write('Теоретическая дисперсия: %s\n' % (teorVar))
+        wfile.write('Доверительный интервал для дисперсии: [%s, %s]\n\n' % (varInterval[0], varInterval[1]))
 
     #вычисляем квантиль уровня 1 - alpha/2 нормального распределения с мат. ожид. 0 и среднеквадратич. отклонением 1
     U = scipy.stats.norm.ppf(1 - alpha / 2)
@@ -269,10 +269,10 @@ def Test_3(seq, mod, alpha, subseqsAmount, intervalsAmount, wfile):
     hit_Test2 = True
     
     wfile.write('============================== Тест 3 ==============================\n\n')
-    wfile.write('Размер выборки: ' + str(len(seq)) + '\n')
-    wfile.write('Количество подпоследовательностей: ' + str(subseqsAmount) + '\n\n')
+    wfile.write('Размер выборки: %s\n' % (seq))
+    wfile.write('Количество подпоследовательностей: %s\n\n' % (subseqsAmount))
     for i in range(len(seqArray)):
-        wfile.write('\t\tПрохождение тестов 1 и 2 для  ' + str(i+1) + ' подпоследовательности\n\n')
+        wfile.write('\t\tПрохождение тестов 1 и 2 для  %s подпоследовательности\n\n' % (i + 1))
         hit = Test_1(seqArray[i], alpha, wfile)
         if (hit == False):
             hit_Test1 = False
@@ -302,10 +302,10 @@ def Anderson_Darling_test(_sequence, mod, wfile):
     def WritingInFile(wfile, length, S, Scrit, hit):
         """В файл wfile записывается размер выборки length, значение статистики и критическое значение"""
         wfile.write('============================== Тест Андерсона ==============================\n\n')
-        wfile.write('Размер выборки: ' + str(length) + '\n')
-        wfile.write('Успешность прохождения: ' + str(hit) + '\n')
-        wfile.write('Значение статистики: ' + str(S) + '\n')
-        wfile.write('Критическое значение: ' + str(Scrit) + '\n\n')
+        wfile.write('Размер выборки: %s\n' % (length))
+        wfile.write('Успешность прохождения: %s\n' % (hit))
+        wfile.write('Значение статистики: %s\n' % (S))
+        wfile.write('Критическое значение: %s\n\n' % (Scrit))
 
     sequence = []
     sequence = copy.copy(_sequence)
@@ -385,10 +385,10 @@ def ChiSqr_Test(sequence, mod, alpha, intervalsAmount, wfile):
     def WritingInFile(wfile, length, S, Scrit, hit, intervAmount):
         """В файл wfile записывается размер выборки length, значение статистики и критическое значение"""
         wfile.write('============================== Тест Андерсона ==============================\n\n')
-        wfile.write('Количество интервалов: ' + str(intervAmount) + '\n\n')
-        wfile.write('Успешность прохождения: ' + str(hit) + '\n')
-        wfile.write('Значение статистики: ' + str(S) + '\n')
-        wfile.write('Критическое значение: ' + str(Scrit) + '\n\n')
+        wfile.write('Количество интервалов: %s\n\n' % (intervAmount))
+        wfile.write('Успешность прохождения: %s\n' % (hit))
+        wfile.write('Значение статистики: %s\n' % (S))
+        wfile.write('Критическое значение: %s\n\n' % (Scrit))
         
 
     intervals = CreateIntervals(mod, intervalsAmount)

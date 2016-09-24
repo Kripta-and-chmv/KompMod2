@@ -1,4 +1,4 @@
-class SeqGenerator:
+class SeqGenerator(object):
     x = 0
     def __init__(self):
         self.a = 0
