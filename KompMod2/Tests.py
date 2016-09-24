@@ -9,15 +9,15 @@ import matplotlib.pyplot as plt
 
 
 def FindPeriod(sequence):
-    """На вход подаётся список-последовательность. 
+    """На вход подаётся список-последовательность.
     Возвращает число-период"""
-    #период определяетя с конца последовательности
-    #берётся последовательность из 3ех элементов и ищется первое её повторение
-    length=len(sequence)
-    a=list(reversed(sequence[length-3:length]))
-    for i in range(length-4, -1, -1):
-        if (a[0]==sequence[i]):
-            if(i-2>-1):                    
+    # период определяетя с конца последовательности
+    # берётся последовательность из 3ех элементов и ищется первое её повторение
+    length = len(sequence)
+    a = list(reversed(sequence[length - 3 : length]))
+    for i in range(length - 4, -1, -1):
+        if (a[0] == sequence[i]):
+            if(i - 2 > -1):                    
                 if(a[1]==sequence[i-1] and a[2]==sequence[i-2]):
                     i+=1#добавляем единицу, т.к. i указывает на начало второго периода
                         #а должен на конец первого
