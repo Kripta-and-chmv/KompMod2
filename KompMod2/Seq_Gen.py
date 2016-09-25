@@ -24,8 +24,7 @@ class SeqGenerator(object):
         self.sequence.append(x0)
 
         for i in range(2, length + 2):
-            self.sequence.append
-            (
+            self.sequence.append(
                 (self.a * self.sequence[i] + self.b * self.sequence[i - 2] +
                     self.c) % self.mod
             )
