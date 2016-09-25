@@ -1,34 +1,37 @@
 class SeqGenerator(object):
 
     def __init__(self):
-        self.a = 0
-        self.b = 0
-        self.c = 0
-        self.mod = 0
-        self.sequence = []
+        self.__a = 0
+        self.__b = 0
+        self.__c = 0
+        self.__mod = 0
+        self.__sequence = []
 
-    def Reading(self, fileName):
+    def read_file(self, fileName):
         koef = []
         with open(fileName, 'r') as f:
             fileStr = f.readline()
             koef = fileStr.split(' ')
         for i in range(len(koef)):
             koef[i] = int(koef[i])
-        self.a, self.b, self.c, self.mod = koef[0], koef[1], koef[2], koef[3]
+        self.__a, self.__b, self.__c, self.__mod = koef[0], koef[1], koef[2], koef[3]
 
-    def GenerateSequence(self, length, x0):
+    def generate_sequence(self, length, x0):
 
-        self.sequence = []
-        self.sequence.append(0)
-        self.sequence.append(0)
-        self.sequence.append(x0)
+        self.__sequence = []
+        self.__sequence.append(0)
+        self.__sequence.append(0)
+        self.__sequence.append(x0)
 
         for i in range(2, length + 2):
-            self.sequence.append(
-                (self.a * self.sequence[i] + self.b * self.sequence[i - 2] +
-                    self.c) % self.mod
+            self.__sequence.append(
+                (self.__a * self.__sequence[i] + self.__b * self.__sequence[i - 2] +
+                    self.__c) % self.__mod
             )
-        self.sequence = self.sequence[3:]
+        self.__sequence = self.__sequence[3:]
 
-    def GetSequence(self):
-        return self.sequence
+    def get_sequence(self):
+        return self.__sequence
+
+    def get_mod(self):
+        return self.__mod

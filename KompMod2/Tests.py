@@ -8,7 +8,7 @@ import scipy.stats
 import matplotlib.pyplot as plt
 
 
-def FindPeriod(sequence):
+def find_period(sequence):
     """На вход подаётся список-последовательность.
 
     Возвращает число-период
@@ -31,7 +31,7 @@ def FindPeriod(sequence):
     return period
 
 
-def Test_1(sequence, alpha, wfile):
+def test_1(sequence, alpha, wfile):
     """Подаётся последовательность seq и уровень значимости alpha. Помимо
     этого, происходит запись результатов теста в файл wfile.
 
@@ -75,7 +75,7 @@ def Test_1(sequence, alpha, wfile):
     return hit
 
 
-def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph, wfile):
+def test_2(seq, mod, alpha, intervalsAmount, drawingGraph, wfile):
     """Подаётся последоватеьность seq, mod - размерность алфавита,
         alpha - уровень значимости, intervalAmount - количество создаваемых интервалов,
         drawingGraph - bool значение, указывающее, нужно ли рисовать гистограмму,
@@ -339,7 +339,7 @@ def Test_2(seq, mod, alpha, intervalsAmount, drawingGraph, wfile):
     
 
 
-def Test_3(seq, mod, alpha, subseqsAmount, intervalsAmount, wfile):
+def test_3(seq, mod, alpha, subseqsAmount, intervalsAmount, wfile):
     """Принимает выборку seq, размер алфавита mod, уровень значимости alpha,
     количество подпоследовательностей subseqAmount, количество интервалов для
     второго теста intervalsAmount Возвращает False, если хотя бы одна
@@ -375,18 +375,18 @@ def Test_3(seq, mod, alpha, subseqsAmount, intervalsAmount, wfile):
         wfile.write(
             '\t\tПрохождение тестов 1 и 2 для  %s подпоследовательности\n\n' %
             (i + 1))
-        hit = Test_1(seqArray[i], alpha, wfile)
+        hit = test_1(seqArray[i], alpha, wfile)
         if (hit is False):
             hit_Test1 = False
 
-        hit = Test_2(seqArray[i], mod, alpha, intervalsAmount, False, wfile)
+        hit = test_2(seqArray[i], mod, alpha, intervalsAmount, False, wfile)
         if (hit is False):
             hit_Test2 = False
 
     return hit_Test1 and hit_Test2
 
 
-def Anderson_Darling_test(_sequence, mod, wfile):
+def anderson_darling_test(_sequence, mod, wfile):
     """Тест андерсона на равномерное распределение. Принимает
     последовательность и размер алфавита.
 
@@ -444,7 +444,7 @@ def Anderson_Darling_test(_sequence, mod, wfile):
     return hit
 
 
-def ChiSqr_Test(sequence, mod, alpha, intervalsAmount, wfile):
+def chisqr_test(sequence, mod, alpha, intervalsAmount, wfile):
     """Нв вход подаются выюорка sequence, размерность алфавита mod.
 
     Возвращается значение bool - результат прохождения теста
