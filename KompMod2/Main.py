@@ -61,38 +61,38 @@ while True:
 intervals_amount = 10
 subseq = 4
 with open('parametres.txt', 'w') as f:
-    Test1valiable40 = Tests.test_1(sequence[len(sequence) - 40:], 0.05, f)
-    Test1valiable100 = Tests.test_1(sequence[len(sequence) - 100:], 0.05, f)
-    Test2valiable40 = Tests.test_2(
-        sequence[len(sequence) - 40:],
-        gen.get_mod(),
-        0.05,
-        intervals_amount,
-        False,
-        f)
-    Test2valiable100 = Tests.test_2(
-        sequence[len(sequence) - 100:],
-        gen.get_mod(),
-        0.05,
-        intervals_amount,
-        False,
-        f)
-    Test3valiable40 = Tests.test_3(
-        sequence[len(sequence) - 40:],
-        gen.get_mod(),
-        0.05,
-        subseq,
-        intervals_amount,
-        f)
-    Test3valiable100 = Tests.test_3(
-        sequence[len(sequence) - 100:],
-        gen.get_mod(),
-        0.05,
-        subseq,
-        intervals_amount,
-        f)
-    anderson = Tests.anderson_darling_test(
-        sequence[len(sequence) - period:], gen.get_mod(), f)
-    chi2 = Tests.chisqr_test(
+    #test1_40 = Tests.test_1(sequence[len(sequence) - 40:], 0.05, f)
+    #test1_100 = Tests.test_1(sequence[len(sequence) - 100:], 0.05, f)
+    #test2_40 = Tests.test_2(
+    #    sequence[len(sequence) - 40:],
+    #    gen.get_mod(),
+    #    0.05,
+    #    intervals_amount,
+    #    False,
+    #    f)
+    #is_test2_100 = Tests.test_2(
+    #    sequence[len(sequence) - 100:],
+    #    gen.get_mod(),
+    #    0.05,
+    #    intervals_amount,
+    #    False,
+    #    f)
+    #is_test3_40 = Tests.test_3(
+    #    sequence[len(sequence) - 40:],
+    #    gen.get_mod(),
+    #    0.05,
+    #    subseq,
+    #    intervals_amount,
+    #    f)
+    #is_test3_100 = Tests.test_3(
+    #    sequence[len(sequence) - 100:],
+    #    gen.get_mod(),
+    #    0.05,
+    #    subseq,
+    #    intervals_amount,
+    #    f)
+    #is_anderson = Tests.anderson_darling_test(
+    #    sequence[len(sequence) - period:], gen.get_mod(), f)
+    is_chi2 = Tests.chisqr_test(
         sequence[len(sequence) - period:], gen.get_mod(), 0.05, 
         int(5 * math.log10(len(sequence))), f)
