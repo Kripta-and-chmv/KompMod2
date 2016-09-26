@@ -450,7 +450,7 @@ def anderson_darling_test(sequence_, mod, wfile):
     return hit
 
 
-def chisqr_test(sequence, mod, alpha, intervals_amount, wfile):
+def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
     """Нв вход подаются выюорка sequence, размерность алфавита mod.
 
     Возвращается значение bool - результат прохождения теста
@@ -509,23 +509,26 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, wfile):
         plt.xticks(intervals)
         plt.show()
 
-    def writing_in_file(wfile, length, S, Scrit, hit, interv_amount):
+    def writing_in_file(wfile, length, S, Scrit, hit, a2, hit_a2, interv_amount):
         """В файл wfile записывается размер выборки length, значение статистики
         и критическое значение."""
         wfile.write(
             '============================== Тест Андерсона '
             '==============================\n\n')
         wfile.write('Количество интервалов: %s\n\n' % (interv_amount))
-        wfile.write('Успешность прохождения: %s\n' % (hit))
+        wfile.write('Успешность прохождения по Sкрит: %s\n' % (hit))
         wfile.write('Значение статистики: %s\n' % (S))
         wfile.write('Критическое значение: %s\n\n' % (Scrit))
+        wfile.write('Успешность прохождения по a2: %s\n' % (hit_a2))
+        wfile.write('Значение a2: %s\n' % (a2))
 
     intervals = create_intervals(mod, intervals_amount)
     hits_amount = calculate_hits_amount(intervals, sequence)
 
     probabil = calculate_probability_intervals(intervals, 0, mod)
 
-    draw_histogram(hits_amount, intervals)
+    if(drawing_graph is True):
+        draw_histogram(hits_amount, intervals)
 
     # вычисляется статистика
     addition = 0
@@ -538,19 +541,19 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, wfile):
     def integrand(x, r):
         return x ** (r / 2 - 1) * sympy.exp(-x / 2)
 
-    Schi2 = scipy.integrate.quad(integrand, S, numpy.inf, args = (r))
-    k =  2 ** (r / 2) * math.gamma(int(r / 2))
-    k = Schi2[0] / k
+    a2 = scipy.integrate.quad(integrand, S, numpy.inf, args = (r))
+    a2 = a2[0] / 2 ** (r / 2) * math.gamma(int(r / 2))
+    
 
-    hit_chi2 = False
-    if (k > alpha):
-       hit_chi2 = True
+    hit_a2 = False
+    if (a2 > alpha):
+       hit_a2 = True
 
     S_crit = 18.307
     hit = False
     if(S <= S_crit):
         hit = True
 
-    writing_in_file(wfile, len(sequence), S, S_crit, hit, intervals_amount)
+    writing_in_file(wfile, len(sequence), S, S_crit, hit, a2, hit_a2, intervals_amount)
 
     return hit

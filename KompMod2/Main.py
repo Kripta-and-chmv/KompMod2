@@ -14,85 +14,118 @@ def generate_coef(fileName):
             f.write(str(random.randrange(1, 100)) + ' ')
         f.write(str(random.randrange(1, 100)))
 
+def generate_period_more_then_100(input_name, length=1000):
+    gen = SeqGenerator()
+    while True:
+        gen.read_file(input_name)
+        gen.generate_sequence(length, 1)
+        sequence = gen.get_sequence()
 
-gen = SeqGenerator()
+        period = Tests.find_period(sequence)
+        with open('seq.txt', 'w') as f:
+            for i in range(len(sequence)):
+                f.write(str(sequence[i]) + ' ')
 
-while True:
+        if (period < 100):
+            generate_coeff(input_name)
+        else:     
+            break
+    return gen
 
-    gen.read_file('input.txt')
-    gen.generate_sequence(1000, 1)
-    sequence = gen.get_sequence()
-    # for i in range (len(sequence)):
-    #    sequence[i] = random.randrange(0, gen.mod)
+def generate_successful_seq(file_name, intervals_amount, subseq): 
+    while True:
+        gen = generate_period_more_then_100(file_name)   
 
-    period = Tests.find_period(sequence)
-    with open('seq.txt', 'w') as f:
-        for i in range(len(sequence)):
-            f.write(str(sequence[i]) + ' ')
+        length = len(seq)
+        with open('parametres.txt', 'w') as f:
+            is_test1_40 = Tests.test_1(seq[length - 40:], 0.05, f)
+            is_test1_100 = Tests.test_1(seq[length - 100:], 0.05, f)
+            is_test2_40 = Tests.test_2(
+                seq[length - 40:],
+                gen.get_mod(),
+                0.05,
+                intervals_amount,
+                False,
+                f)
+            is_test2_100 = Tests.test_2(
+                seq[length - 100:],
+                gen.get_mod(),
+                0.05,
+                intervals_amount,
+                False,
+                f)
+            is_test3_40 = Tests.test_3(
+                seq[length - 40:],
+                gen.get_mod(),
+                0.05,
+                subseq,
+                intervals_amount,
+                f)
+            is_test3_100 = Tests.test_3(
+                seq[length - 100:],
+                gen.get_mod(),
+                0.05,
+                subseq,
+                intervals_amount,
+                f)
+            is_anderson = Tests.anderson_darling_test(
+                seq[length - period:], gen.get_mod(), f)
+            is_chi2 = Tests.chisqr_test(
+                seq[length - period:], gen.get_mod(), 0.05, 
+                int(5 * math.log10(period)), f)
+        
+            passing_the_tests = is_test1_40 and is_test1_100 and \
+                is_test2_40 and is_test2_100 and is_test3_40 and \
+                is_test3_100 and is_chi2 and is_anderson
 
-    if (period < 100):
-        generate_coeff('input.txt')
-    else:
-        # Test1valiable40 = Tests.Test_1(sequence[len(sequence) - 40:], 0.05)
-        # Test1valiable100 = Tests.Test_1(sequence[len(sequence) - 100:], 0.05)
-
-        # Test2valiable40 = Tests.Test_2(sequence[len(sequence) - 40:],
-        # gen.mod, 0.05, 10, False)
-        # Test2valiable100 = Tests.Test_2(sequence[len(sequence) - 100:],
-        # gen.mod, 0.05, 10, False)
-
-        # Test3valiable40 = Tests.Test_3(sequence[len(sequence) - 40:],
-        # gen.mod, 0.05, 4, 16)
-        # Test3valiable100 = Tests.Test_3(sequence[len(sequence) - 100:],
-        # gen.mod, 0.05, 4, 16)
-
-        # anderson = Tests.Anderson_Darling_test(
-        # sequence[len(sequence) - period:], gen.mod)
-
-        # chi2 = Tests.ChiSqr_Test(sequence[len(sequence) - period:], gen.mod)
-        # if((Test1valiable40 and Test1valiable100 and Test2valiable40 and
-        # Test2valiable100 and Test3valiable40 and Test3valiable100 and chi2
-        # and anderson) == True):
-        break
-        # else:
-        #    RandomCoeff('input.txt')
+            if(passing_the_tests is True):
+                break
+            else:
+                generate_coef(fileName)
+    return gen
 
 
+gen = generate_period_more_then_100('input.txt')
+
+seq = gen.get_sequence()
+period = Tests.find_period(seq)
 intervals_amount = 10
 subseq = 4
+length = len(seq)
+
 with open('parametres.txt', 'w') as f:
-    #test1_40 = Tests.test_1(sequence[len(sequence) - 40:], 0.05, f)
-    #test1_100 = Tests.test_1(sequence[len(sequence) - 100:], 0.05, f)
-    #test2_40 = Tests.test_2(
-    #    sequence[len(sequence) - 40:],
-    #    gen.get_mod(),
-    #    0.05,
-    #    intervals_amount,
-    #    False,
-    #    f)
-    #is_test2_100 = Tests.test_2(
-    #    sequence[len(sequence) - 100:],
-    #    gen.get_mod(),
-    #    0.05,
-    #    intervals_amount,
-    #    False,
-    #    f)
-    #is_test3_40 = Tests.test_3(
-    #    sequence[len(sequence) - 40:],
-    #    gen.get_mod(),
-    #    0.05,
-    #    subseq,
-    #    intervals_amount,
-    #    f)
-    #is_test3_100 = Tests.test_3(
-    #    sequence[len(sequence) - 100:],
-    #    gen.get_mod(),
-    #    0.05,
-    #    subseq,
-    #    intervals_amount,
-    #    f)
-    #is_anderson = Tests.anderson_darling_test(
-    #    sequence[len(sequence) - period:], gen.get_mod(), f)
+    test1_40 = Tests.test_1(seq[length - 40:], 0.05, f)
+    test1_100 = Tests.test_1(seq[length - 100:], 0.05, f)
+    test2_40 = Tests.test_2(
+        seq[length - 40:],
+        gen.get_mod(),
+        0.05,
+        intervals_amount,
+        True,
+        f)
+    is_test2_100 = Tests.test_2(
+        seq[length - 100:],
+        gen.get_mod(),
+        0.05,
+        intervals_amount,
+        True,
+        f)
+    is_test3_40 = Tests.test_3(
+        seq[length - 40:],
+        gen.get_mod(),
+        0.05,
+        subseq,
+        intervals_amount,
+        f)
+    is_test3_100 = Tests.test_3(
+        seq[length - 100:],
+        gen.get_mod(),
+        0.05,
+        subseq,
+        intervals_amount,
+        f)
+    is_anderson = Tests.anderson_darling_test(
+        seq[length - period:], gen.get_mod(), f)
     is_chi2 = Tests.chisqr_test(
-        sequence[len(sequence) - period:], gen.get_mod(), 0.05, 
-        int(5 * math.log10(len(sequence))), f)
+        seq[length - period:], gen.get_mod(), 0.05, 
+        int(5 * math.log10(period)), f)
