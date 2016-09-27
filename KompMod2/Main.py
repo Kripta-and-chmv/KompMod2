@@ -72,7 +72,7 @@ def generate_successful_seq(file_name, intervals_amount, subseq):
                 seq[length - period:], gen.get_mod(), f)
             is_chi2 = Tests.chisqr_test(
                 seq[length - period:], gen.get_mod(), 0.05, 
-                int(5 * math.log10(period)), f)
+                int(5 * math.log10(period)), False, f)
         
             passing_the_tests = is_test1_40 and is_test1_100 and \
                 is_test2_40 and is_test2_100 and is_test3_40 and \
@@ -94,38 +94,17 @@ subseq = 4
 length = len(seq)
 
 with open('parametres.txt', 'w') as f:
-    test1_40 = Tests.test_1(seq[length - 40:], 0.05, f)
-    test1_100 = Tests.test_1(seq[length - 100:], 0.05, f)
-    test2_40 = Tests.test_2(
-        seq[length - 40:],
-        gen.get_mod(),
-        0.05,
-        intervals_amount,
-        True,
-        f)
-    is_test2_100 = Tests.test_2(
-        seq[length - 100:],
-        gen.get_mod(),
-        0.05,
-        intervals_amount,
-        True,
-        f)
-    is_test3_40 = Tests.test_3(
-        seq[length - 40:],
-        gen.get_mod(),
-        0.05,
-        subseq,
-        intervals_amount,
-        f)
-    is_test3_100 = Tests.test_3(
-        seq[length - 100:],
-        gen.get_mod(),
-        0.05,
-        subseq,
-        intervals_amount,
-        f)
-    is_anderson = Tests.anderson_darling_test(
-        seq[length - period:], gen.get_mod(), f)
-    is_chi2 = Tests.chisqr_test(
-        seq[length - period:], gen.get_mod(), 0.05, 
-        int(5 * math.log10(period)), f)
+    #test1_40 = Tests.test_1(seq[length - 40:], 0.05, f)
+    #test1_100 = Tests.test_1(seq[length - 100:], 0.05, f)
+    #test2_40 = Tests.test_2(seq[length - 40:], gen.get_mod(), 0.05,
+    #    intervals_amount, True, f)
+    #is_test2_100 = Tests.test_2(seq[length - 100:], gen.get_mod(),
+    #    0.05, intervals_amount, True, f)
+    #is_test3_40 = Tests.test_3(seq[length - 40:], gen.get_mod(), 0.05, subseq,
+    #    intervals_amount, f)
+    #is_test3_100 = Tests.test_3(seq[length - 100:], gen.get_mod(), 0.05,
+    #    subseq, intervals_amount, f)
+    is_anderson = Tests.anderson_darling_test(seq[length - period:],
+        gen.get_mod(), f)
+    is_chi2 = Tests.chisqr_test(seq[length - period:], gen.get_mod(), 0.05, 
+        int(5 * math.log10(period)), True, f)

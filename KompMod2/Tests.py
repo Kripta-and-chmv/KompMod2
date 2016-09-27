@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 
 
 def find_period(sequence):
-    """На вход подаётся список-последовательность.
-
-    Возвращает число-период
+    """Находит период у числовой последовательности.
+    Аргументы: sequence - последовательность.
+    Вывод: period - длина периода.
 
     """
     # период определяетя с конца последовательности
@@ -31,25 +31,36 @@ def find_period(sequence):
     period = length - i
     return period
 
-
 def test_1(sequence, alpha, wfile):
-    """Подаётся последовательность seq и уровень значимости alpha. Помимо
-    этого, происходит запись результатов теста в файл wfile.
+    """Проходится тест №1. Результаты записываются в файл.
+    Аргументы:
+        sequence - выборка, list числовых значений;
+        alpha - уроень значимости, float;
+        wfile - файл, куда записываются результаты теста, file.
 
-    Возвращает значение bool - результат прохождения теста.
+    Вывод: 
+        hit - успешность прохождения, bool.
+        
 
     """
 
     def writing_in_file(wfile, length, hit, interval):
-        """В файл wfile записывается размер выборки length, успешность
-        прохождения теста hit, мат ожидание length/2 и доверительный интервал
-        interval."""
+        """Запись результатов в файл    
+        Аргументы:
+            wfile - файл, куда происходит запись, file;
+            length - длина выборки, int;
+            hit - успешность прохождения теста, bool;
+            interval - доверительный интервал, list из двух элементов,
+                [0] - начало интервала, [1] - конец.
+
+        """
+        teor_exp_value = length / 2
         wfile.write(
             '============================== Тест 1 '
             '==============================\n\n')
         wfile.write('Размер выборки: %s\n' % (length))
         wfile.write('Успешность прохождения: %s\n' % (hit))
-        wfile.write('Математическо ожидание: %s\n' % (length / 2))
+        wfile.write('Математическо ожидание: %s\n' % (teor_exp_value))
         wfile.write(
             'Доверительный интервал: [%s, %s]\n\n' %
             (interval[0], interval[1]))
@@ -76,23 +87,29 @@ def test_1(sequence, alpha, wfile):
 
     return hit
 
-
 def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
-    """Подаётся последоватеьность seq, mod - размерность алфавита,
-        alpha - уровень значимости,
-        intervalAmount - количество создаваемых интервалов,
-        drawing_graph - bool значение, указывающее,
-        нужно ли рисовать гистограмму,
-        wfile - файл, куда будет записываться результат выполнения теста.
-        возвращается значение bool - результат попадания
-        теоретических мат. ожиданий и дисперсий
-        в построенные доверительные интервалы
+    """Тест №2.
+    Аргументы:
+        seq - выборка, list числовых значений;
+        mod - размерность алфавита выборки, int;
+        alpha - уровень значимости, float;
+        intervals_amount - количество интервалов, int;
+        drawing_graph - нужно ли рисовать гистограмму, bool;
+        wfile - файл, куда записываются результаты теста, file.
+    Вывод:
+    exp_v_hit and var_hit - успешность прохождения теста, попадание теор.
+        мат. ожидания и дисперсии в построенные доверительные интервалы, 
+        bool.
+    
     """
+
     def create_intervals(mod, intervals_amount):
-        """разбиваем отрезок от 0 до mod на amount интервалов.
-
-        возвращается массив со значениями всех границ интервалов
-
+        """Разбивает отрезок от 0 до mod на интервалы.
+        Аргументы:
+            mod - верхняя граница отрезка, число;
+            intervals_amount - количество интервалов, int.
+        Вывод:
+            intervals - список с границами интервалов, list числовых значений.
         """
         intervals = []
         intervals.append(0)
@@ -105,8 +122,14 @@ def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
         return intervals
 
     def find_frequency(intervals, sequence):
-        """находит частоту попаданий элементов из sequence в интервалы
-        intervals."""
+        """Вычисляется частоту попаданий элементов выборки в каждый интервал.
+        Аргументы:
+            intervals - список границ интервалов, list;
+            sequence - выборка, list числовых значений.
+        Вывод:
+            frequency - список количества попаданий для каждого интервала, list of int.
+
+        """
         frequency = numpy.zeros(len(intervals) - 1)
         length = len(sequence)
         piece = 1 / length
@@ -118,7 +141,11 @@ def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
         return frequency
 
     def draw_histogram(frequency, intervals):
-        """Рисует гистограмму частот frequency на интервалах intervals."""
+        """Рисует гистограмму частот.
+        Аргументы:
+            frequency - частота попаданий в интервалы, int;
+            intervals - списо границ интервалов, list.
+        """
 
         # ширина стобца - размер алфавита делаится на количество интервалов
         width = intervals[len(intervals) - 1] / (len(intervals) - 1)
@@ -131,7 +158,13 @@ def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
         plt.show()
 
     def calculate_exp_value(sequence):
-        """Возвращает мат ожидание выборки sequence."""
+        """Вычиляет математическое ожидание выборки.
+        Аргументы: 
+            sequence - выборка, list числовых значений.
+        Вывод:
+            exp_value - математическое ожидание, float.
+        
+        """
         exp_value = 0.0
         for i in range(len(sequence)):
             exp_value += sequence[i]
@@ -139,7 +172,13 @@ def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
         return exp_value
 
     def calculate_variance(sequence, exp_value):
-        """возвращает дисперсию выборки sequence с мат ожиданием exp_value."""
+        """Вычиляет дисперсию выборки.
+        Аргументы: 
+            sequence - выборка, list числовых значений.
+        Вывод:
+            variance - дисперсия, float.
+        
+        """
         variance = 0.0
         for i in range(len(sequence)):
             variance += (sequence[i] - exp_value) ** 2
@@ -147,21 +186,31 @@ def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
         return variance
 
     def evaluate_freq(freq, seq_length, U, intervals_amount):
-        """принимает список частот freq, длину последвательности seq_length,
-        квантиль U, кол-во интервалов intervals_amount.
-
-        Возвращает частоту интервалы для каждой частоты, кол-во попавших
-        в построенные ассимптотические доверительные интервалы теоретич.
-        частот
+        """Оценивание частоты попаданий эелементов выборки в интервалы.
+        Аргументы:
+            freq - частота попаданий для кжадого интервала, list of int;
+            seq_length - длина выборки, int;
+            U - квантиль, float;
+            intervals_amount - количество интервалов.
+        Вывод:
+            P - теоретическая частота попаданий, float;
+            intervals - список доверительных интервалов для каждой частоты. 
+                элемент [0][i] - нижняя граница для частоты попадания
+                в i-ый интервал, элемент [1][i] - верхняя граница, list of lists;
+            hits_amount - количество попаданий P в доверительные интервалы, int.
 
         """
 
         def calculate_freq_intervals(freq, seq_length, intervals_amount):
-            """возвращает список ассимптотических доверительных интервалов для
-            каждого значения из списка частот freq.
-
-            каждый i-ый элемент freq_intervals[0] - няжняя граница дов интервала для freq[i],
-            каждый i-ый элемент freq_intervals[1] - верхняя граница дов интервала для freq[i]
+            """Построение доверительных интервалов для частот.
+            Аргументы:
+                freq - частоты для каждого интервала, list;
+                seq_length - длина последовательности, int;
+                intervals_amount - количество интервалов, int;
+            Вывод:
+                freq_intervals - список доверительных интервалов для каждой частоты. 
+                элемент [0][i] - нижняя граница для частоты попадания
+                в i-ый интервал, элемент [1][i] - верхняя граница, list of lists.
 
             """
             freq_intervals = [[], []]
@@ -185,18 +234,30 @@ def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
         return P, intervals, hits_amount
 
     def evaluate_exp_value(exp_value, variance, seq_length, mod, U):
-        """Принимает мат ожидание exp_value, дисперсию variance, длину выборки
-        seq_length, размер алфавита mod, квантиль U. Возвращает теоретическое
-        мат ожидание, интервал для построенного мат ожидания,
-
-        bool значение - результат попадания теоретического мат ожидания в построенныей ассимптотический доверительный интервал
+        """Оценивание попадания математического ожидания в доверительный интервал.
+        Аргументы:
+            exp_value - математическое ожидание, float;
+            variance - дисперсия, float;
+            seq_length - длина выборки, int;
+            mod - размерность алфавита выборки, int;
+            U - квантиль, float.
+        Вывод:
+            Mk - теоретическое математическое ожидание, float;
+            exp_value_interval - доверительный интервал для мат ожидания, list числовых значений;
+            hit - попадание Mk в доверительный интервал, bool.
 
         """
         def calculate_exp_val_interval(exp_value, variance, seq_length, U):
-            """Возвращает ассимптотический доверительный интервал для мат
-            ожидания exp_value.
-
-            exp_val_interval[0] - нижняя граница. exp_val_interval[1] - верхняя граница
+            """Вычисляется доверительный интервал для математического ожидания.
+            Аргументы:
+                exp_value - математическое ожидание, float;
+                variance - дисперсия, float;
+                seq_length - длина выборки, int;
+                U - квантиль, float.
+            Вывод:
+                exp_val_interval - доверительный интервал для математического
+                ожидания; [0] - нижняя граница, [1] - верхняя,
+                list числовых значений.
 
             """
             exp_val_interval = []
@@ -213,64 +274,66 @@ def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
             hit = True
 
         return Mk, exp_value_interval, hit
-
     def evaluate_variance(variance, seq_length, alpha, mod):
-        """принимает дисперсию variance, длину выборки sqeLength, уровень
-        значимости alpha, размер алфавита mod. Возвращает теоретическую
-        дисперсию, интервал для построенной дисперсии,
-
-        bool значение - результат попадания теоретической дисперсии в построенныей ассимптотический доверительный интервал
+        """Оценивание попадания дисперсии в доверительный интервал.
+        Аргументы:
+            variance - дисперсия, float;
+            seq_length - длина выборки, int;
+            alpha - уровень значимости, float;
+            mod - размерность алфавита выборки, int.
+        Вывод:
+            Dk - теоретическая дисперсия, float;
+            exp_value_interval - доверительный интервал для мат ожидания, list числовых значений;
+            hit - попадание Mk в доверительный интервал, bool.
 
         """
         def calculate_variance_interval(variance, seq_length, alpha):
-            """Возвращает ассимптотический доверительный интервал для дисперсии
-            variance.
-
-            variancInterval[0] - нижняя граница. variancInterval[1] - верхняя граница.
+            """Вычисляется доверительный интервал для дисперсии.
+            Аргументы:
+                variance - дисперсия, float;
+                seq_length - длина выборки, int;
+                alpha - уровень значимости, float.
+            Вывод:
+                variance_interval - доверительный интервал для дисперсии. 
+                    [0] - нижняя граница, [1] - верхняя, list числовых значений.
 
             """
             variance_interval = []
-            variance_interval.append(
-                (seq_length -
-                 1) *
-                variance /
-                scipy.stats.chi2.ppf(
-                    1 -
-                    alpha /
-                    2,
-                    seq_length -
-                    1))
-            variance_interval.append(
-                (seq_length -
-                 1) *
-                variance /
-                scipy.stats.chi2.ppf(
-                    alpha /
-                    2,
-                    seq_length -
-                    1))
+            variance_interval.append((seq_length - 1) * variance /
+                scipy.stats.chi2.ppf(1 - alpha / 2, seq_length - 1))
+            variance_interval.append((seq_length - 1) * variance /
+                scipy.stats.chi2.ppf(alpha / 2, seq_length - 1))
             return variance_interval
 
         Dk = mod ** 2 / 12
         variance_interval = calculate_variance_interval(variance,
-                                                        seq_length, alpha)
+            seq_length, alpha)
         hit = False
         if(variance_interval[0] <= Dk <= variance_interval[1]):
             hit = True
 
-        return Dk, intervals, hit
+        return Dk, variance_interval, hit
 
     def writing_in_file(wfile, length, intervals_amount, hits_amount,
                         teor_freq, freq_interv, exp_v_hit,
                         teor_exp_v, exp_v_interval, var_hit,
                         teor_var, var_interval):
-        """В файл wfile записывается размер выборки length, количество
-        построенных интервалов, теоретическая вероятность попадания элемента в
-        интервал, количество попавших в интервалы элементов, интервалы для
-        каждой частоты попадания в интервал, результат попадания мат ожидания в
-        интервал, теоретичесоке мат ожидание, доверительный интервал для мат
-        ожидания, результат попадания дисперсии в инервал, теоретическая
-        дисперсия, доверительный интервал для дисперсии."""
+        """Запись результатов в файл.
+        Аргументы:
+            wfile - файл, куда происходит запись, file;
+            length - длина выборки, int;
+            intervals_amount - количество интервалов, int;
+            hits_amount - количество попаданий частот в доверит интервал, int;
+            teor_freq - теоретическая частота попаданий, float;
+            freq_interv - доверительные интеваы для каждой частоты, list of lists;
+            exp_v_hit - попадание теор. мат. ожидания в доверительный интервал, bool;
+            teor_exp_v - теоретическое мат. ожилание, float;
+            exp_v_interval - доверительный интервал для мат ожидания, list;
+            var_hit - попадание теор. дисперсии в доверительный интервал, bool;
+            teor_var - теоретическая дисперсия, float;
+            var_interval - доверительный интервал для дисперсии, list;
+
+        """
         wfile.write(
             '============================== Тест 2 '
             '==============================\n\n')
@@ -326,34 +389,34 @@ def test_2(seq, mod, alpha, intervals_amount, drawing_graph, wfile):
     teor_var, var_interval, var_hit = evaluate_variance(
         variance, length, alpha, mod)
 
-    writing_in_file(
-        wfile,
-        length,
-        intervals_amount,
-        hits_amount,
-        teor_freq,
-        freq_interv,
-        exp_v_hit,
-        teor_exp_v,
-        exp_v_interval,
-        var_hit,
-        teor_var,
+    writing_in_file(wfile, length, intervals_amount, hits_amount, teor_freq,
+        freq_interv, exp_v_hit, teor_exp_v, exp_v_interval, var_hit, teor_var,
         var_interval)
-
+    
     return exp_v_hit and var_hit
 
-
 def test_3(seq, mod, alpha, subseqs_amount, intervals_amount, wfile):
-    """Принимает выборку seq, размер алфавита mod, уровень значимости alpha,
-    количество подпоследовательностей subseqAmount, количество интервалов для
-    второго теста intervals_amount Возвращает False, если хотя бы одна
-    подпоследовательность не прошла Test 1 и Test 2, иначе True."""
+    """Проводится тест №3. Результаты записываются в файл.
+    Аргументы:
+        seq - выборка, list числовых значений;
+        mod - размерность алфавита выборки, int;
+        alpha - уровень значимости, foat;
+        subseqs_amount - количество создаваемых подпоследовательностей, int;
+        intervals_amount - количество интервалов для теста №2, int;
+        wfile - файл, куда записываются результаты теста, file.
+    Вывод:
+        is_test1 and is_test2 - успешность прохождения всех подпоследовательностей
+            тестов 1 и 2. В случае хотя бы одной неудачи - тест №3 неудачен, bool.
+
+    """
 
     def create_subseqs(seq, subseqs_amount):
-        """принимает выборку seq и кол-во подпоследовательностей subseqs_amount.
-
-        возвращает список подпоследовательностей, содержащий все
-        элементы из seq
+        """Создаёт подпоследовательности из заданной выборки.
+        Аргументы:
+            seq - выборка, list числовых значений;
+            subseqs_amount - количество подпоследовательностей, int.
+        Вывод:
+            seq_array - список подпоследовательностей seq, list of lists.
 
         """
         seq_length = len(seq)
@@ -374,7 +437,7 @@ def test_3(seq, mod, alpha, subseqs_amount, intervals_amount, wfile):
     wfile.write(
         '============================== Тест 3 '
         '==============================\n\n')
-    wfile.write('Размер выборки: %s\n' % (seq))
+    wfile.write('Размер выборки: %s\n' % (len(seq)))
     wfile.write('Количество подпоследовательностей: %s\n\n' % (subseqs_amount))
     for i in range(len(seq_array)):
         wfile.write(
@@ -390,22 +453,26 @@ def test_3(seq, mod, alpha, subseqs_amount, intervals_amount, wfile):
 
     return is_test1 and is_test2
 
-
 def anderson_darling_test(sequence_, mod, wfile):
-    """Тест андерсона на равномерное распределение. Принимает
-    последовательность и размер алфавита.
-
-    Возвращает bool значение - результат прохождения теста
+    """Тест Андерсона-Дарлинга.
+    Аргументы:
+        sequence - выборка, list числовых значений;
+        mod - размерность алфавита выборки, int;
+        wfile - файл, куда записываются результаты теста, file.
+    Вывод:
+        hit and hit_a2 - успешность прохождения теста по двум критериям, bool.
 
     """
-    def uniform_distr_func(x, mod):
-        """функция равномерного распредленения.
-
-        принимает x - элемент выборки, mod - верхняя граница
+    def uniform_distr_func(x, a, b):
+        """Функция равномерного распредленения.
+        Аргументы:
+            x - аргумент функции, числовое значение;
+            a - нижняя граница функции распределения, int;
+            b - верхняя граница функции распределения, int;
+        Вывод:
+            результат функции, чсловое значение.
 
         """
-        a = 0
-        b = mod
         if (x < a):
             return 0
         elif (a <= x < b):
@@ -413,16 +480,28 @@ def anderson_darling_test(sequence_, mod, wfile):
         elif (x >= b):
             return 1
 
-    def writing_in_file(wfile, length, S, Scrit, hit):
-        """В файл wfile записывается размер выборки length, значение статистики
-        и критическое значение."""
+    def writing_in_file(wfile, length, S, Scrit, hit, a2, hit_a2):
+        """Запись результатов в файл    
+        Аргументы:
+            wfile - файл, куда происходит запись, file;
+            length - длина выборки, int;
+            S - вычисленное значение статистики, float;
+            Scrit - критическе значение статистики;
+            hit - успешность прохождения теста, bool;
+            a2 - значение a2, float;
+            hit_a2 - прохождение теста по критерию а2, bool.
+        """
         wfile.write(
             '============================== Тест Андерсона '
             '==============================\n\n')
         wfile.write('Размер выборки: %s\n' % (length))
-        wfile.write('Успешность прохождения: %s\n' % (hit))
+        wfile.write('Успешность прохождения по критерию сравнения с крит. '
+            'значением: %s\n' % (hit))
         wfile.write('Значение статистики: %s\n' % (S))
         wfile.write('Критическое значение: %s\n\n' % (Scrit))
+        wfile.write('Успешность прохождения про критерию a2: %s\n\n' % (hit_a2))
+        wfile.write('Значение а2: %s\n' % (a2))
+        
 
     sequence = []
     sequence = sorted(copy.copy(sequence_))
@@ -431,13 +510,30 @@ def anderson_darling_test(sequence_, mod, wfile):
     length = len(sequence)
 
     for i in range(1, length + 1):
-        F = uniform_distr_func(sequence[i - 1], mod)
+        F = uniform_distr_func(sequence[i - 1], 0, mod)
         if(F == 0):
             return False, [999999999999, 2.4924]
         addition += (2 * i - 1) * math.log(F) / (2 * length)
         addition += (1 - (2 * i - 1) / (2 * length)) * math.log(1 - F)
 
     S = -len(sequence) - 2 * addition
+
+    def integrand(x, S, j):
+        return sympy.exp(S/(8*(x**2 + 1)) - ((4*j + 1)**2 * math.pi**2 * x**2)/(8 * S))
+
+    addition = 0
+    for j in range(170):
+        el = (-1)**j * (math.gamma(j + 0.5) * (4*j + 1)) / (math.gamma(0.5) * math.gamma(j + 1))
+        el *= sympy.exp(-((4*j + 1)**2 * math.pi**2) / (8 * S))
+        integ = scipy.integrate.quad(integrand, 0, numpy.inf, args = (S, j))
+        el *= integ[0]
+        addition += (math.sqrt(2 * math.pi) / S) * el
+        
+    a2 = 1 - addition
+    hit_a2 = False
+    if (a2 > 0.05):
+        hit_a2 = True
+
     critical_value = 2.4924
 
     hit = False
@@ -445,21 +541,30 @@ def anderson_darling_test(sequence_, mod, wfile):
     if (S <= critical_value):
         hit = True
 
-    writing_in_file(wfile, len(sequence), S, critical_value, hit)
+    writing_in_file(wfile, len(sequence), S, critical_value, hit, a2, hit_a2)
 
-    return hit
-
+    return hit and hit_a2
 
 def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
-    """Нв вход подаются выюорка sequence, размерность алфавита mod.
-
-    Возвращается значение bool - результат прохождения теста
+    """Тест Хи-квадрат.
+    Аргументы:
+        sequence - выборка, list числовых значений;
+        mod - размерность алфавита выборки, int;
+        alpha - уровень значимости, float;
+        intervals_amount - количество интервалов, int;
+        drawing_graph - нужно ли рисовать гистограмму, bool;
+        wfile - файл, куда записываются результаты теста, file.
+    Вывод:
+        hit and hit_a2 - успешность прохождения теста по двум критериям, bool.
 
     """
     def create_intervals(mod, intervals_amount):
-        """разбиваем отрезок от 0 до mod на amount интервалов.
-
-        возвращается массив со значениями всех границ интервалов
+        """Разбивает отрезок от 0 до mod на интервалы.
+        Аргументы:
+            mod - верхняя граница отрезка, число;
+            intervals_amount - количество интервалов, int.
+        Вывод:
+            intervals - список с границами интервалов, list числовых значений.
 
         """
         intervals = []
@@ -473,8 +578,14 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
         return intervals
 
     def calculate_hits_amount(intervals, sequence):
-        """находит количество элементов sequence, попадающих в каждые интервалы
-        intervals."""
+        """Вычисляется количество элементов выборки, попавших в каждый интервал.
+        Аргументы:
+            intervals - список границ интервалов, list;
+            sequence - выборка, list числовых значений.
+        Вывод:
+            frequency - список количества попаданий для каждого интервала, list of int.
+
+        """
         frequency = numpy.zeros(len(intervals) - 1)
         length = len(sequence)
         for i in range(length):
@@ -485,10 +596,15 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
         return frequency
 
     def calculate_probability_intervals(intervals, a, b):
-        """находим вероятность попадания сл величины в интервалы intervals при
-        равномерном распределении. возвращаем список вероятностей.
-
-        a - нижняя граница равномерного распределения, b - верхняя
+        """Вычисляется вероятность попадания слчайной величины в заданные
+        интервалы при равномерном распределении.
+        
+        Аргументы:
+            intervals - список границ интервалов, list;
+            a - нижняя граница функции равномерного распределения;
+            b - верхняя граница функции равномерного распределения.
+        Вывод:
+            probabil - список вероятностей для каждого интервала, list of float.
 
         """
         probabil = []
@@ -497,7 +613,11 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
         return probabil
 
     def draw_histogram(frequency, intervals):
-        """Рисует гистограмму частот frequency на интервалах intervals."""
+        """Рисует гистограмму частот.
+        Аргументы:
+            frequency - частота попаданий в интервалы, int;
+            intervals - списо границ интервалов, list.
+        """
 
         # ширина стобца - размер алфавита делаится на количество интервалов
         width = intervals[len(intervals) - 1] / (len(intervals) - 1)
@@ -510,8 +630,18 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
         plt.show()
 
     def writing_in_file(wfile, length, S, Scrit, hit, a2, hit_a2, interv_amount):
-        """В файл wfile записывается размер выборки length, значение статистики
-        и критическое значение."""
+        """Запись результатов в файл    
+        Аргументы:
+            wfile - файл, куда происходит запись, file;
+            length - длина выборки, int;
+            S - вычисленное значение статистики, float;
+            Scrit - критическе значение статистики;
+            hit - успешность прохождения теста по критерию сравнения с крит. значением, bool;
+            a2 - a2, float;
+            hit_a2 - успешность прохождения теста по критерию a2, bool;
+            interv_amount - количество интервалов, int.
+
+        """
         wfile.write(
             '============================== Тест Андерсона '
             '==============================\n\n')
@@ -537,13 +667,13 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
                      probabil[i]) ** 2 / probabil[i]
     S = len(sequence) * addition
 
+    # вычисляется a2
     r = 5
     def integrand(x, r):
         return x ** (r / 2 - 1) * sympy.exp(-x / 2)
 
     a2 = scipy.integrate.quad(integrand, S, numpy.inf, args = (r))
     a2 = a2[0] / 2 ** (r / 2) * math.gamma(int(r / 2))
-    
 
     hit_a2 = False
     if (a2 > alpha):
@@ -556,4 +686,4 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
 
     writing_in_file(wfile, len(sequence), S, S_crit, hit, a2, hit_a2, intervals_amount)
 
-    return hit
+    return hit and hit_a2
