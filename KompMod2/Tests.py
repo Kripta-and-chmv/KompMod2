@@ -640,7 +640,7 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
 
         """
         wfile.write(
-            '============================== Тест Андерсона '
+            '============================== Тест Хи квадрат '
             '==============================\n\n')
         wfile.write('Количество интервалов: %s\n\n' % (interv_amount))
         wfile.write('Успешность прохождения по Sкрит: %s\n' % (hit))
