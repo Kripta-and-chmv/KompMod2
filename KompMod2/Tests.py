@@ -422,7 +422,6 @@ def test_3(seq, mod, alpha, subseqs_amount, intervals_amount, wfile):
         seq_length = len(seq)
         t = int((seq_length - 1) / subseqs_amount)
         seq_array = []
-
         for i in range(subseqs_amount):
             s = []
             for j in range(t + 1):
@@ -453,7 +452,7 @@ def test_3(seq, mod, alpha, subseqs_amount, intervals_amount, wfile):
 
     return is_test1 and is_test2
 
-def anderson_darling_test(sequence_, mod, wfile):
+def anderson_darling_test(sequence_, mod, alpha, wfile):
     """Тест Андерсона-Дарлинга.
     Аргументы:
         sequence - выборка, list числовых значений;
@@ -521,25 +520,23 @@ def anderson_darling_test(sequence_, mod, wfile):
     def integrand(x, S, j):
         return sympy.exp(S/(8*(x**2 + 1)) - ((4*j + 1)**2 * math.pi**2 * x**2)/(8 * S))
 
-    addition = 0
-    for j in range(170):
-        el = (-1)**j * (math.gamma(j + 0.5) * (4*j + 1)) / (math.gamma(0.5) * math.gamma(j + 1))
-        el *= sympy.exp(-((4*j + 1)**2 * math.pi**2) / (8 * S))
-        integ = scipy.integrate.quad(integrand, 0, numpy.inf, args = (S, j))
-        el *= integ[0]
-        addition += (math.sqrt(2 * math.pi) / S) * el
+    def calculate_a2(S):
+        j = 0
+        return (math.sqrt(2 * math.pi) / S) *\
+            scipy.sum((-1)**j * (math.gamma(j + 0.5) * (4*j + 1)) /\
+            (math.gamma(0.5) * math.gamma(j + 1)) *\
+            sympy.exp(-((4*j + 1)**2 * math.pi**2) / (8 * S)) *\
+            scipy.integrate.quad(integrand, 0, numpy.inf, args=(S, j))[0], j)
+    
+    addition = calculate_a2(S)
         
     a2 = 1 - addition
-    hit_a2 = False
-    if (a2 > 0.05):
-        hit_a2 = True
+    
+    hit_a2 = a2 > alpha
 
     critical_value = 2.4924
 
-    hit = False
-
-    if (S <= critical_value):
-        hit = True
+    hit = S <= critical_value
 
     writing_in_file(wfile, len(sequence), S, critical_value, hit, a2, hit_a2)
 
@@ -675,14 +672,11 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
     a2 = scipy.integrate.quad(integrand, S, numpy.inf, args = (r))
     a2 = a2[0] / 2 ** (r / 2) * math.gamma(int(r / 2))
 
-    hit_a2 = False
-    if (a2 > alpha):
-       hit_a2 = True
+    hit_a2 = a2 > alpha
 
     S_crit = 18.307
-    hit = False
-    if(S <= S_crit):
-        hit = True
+
+    hit = S <= S_crit
 
     writing_in_file(wfile, len(sequence), S, S_crit, hit, a2, hit_a2, intervals_amount)
 
