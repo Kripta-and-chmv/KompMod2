@@ -555,59 +555,6 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
         hit and hit_a2 - успешность прохождения теста по двум критериям, bool.
 
     """
-    def create_intervals(mod, intervals_amount):
-        """Разбивает отрезок от 0 до mod на интервалы.
-        Аргументы:
-            mod - верхняя граница отрезка, число;
-            intervals_amount - количество интервалов, int.
-        Вывод:
-            intervals - список с границами интервалов, list числовых значений.
-
-        """
-        intervals = []
-        intervals.append(0)
-        inter_length = mod / intervals_amount
-        last_point = inter_length
-        for i in range(intervals_amount - 1):
-            intervals.append(last_point)
-            last_point += inter_length
-        intervals.append(mod)
-        return intervals
-
-    def calculate_hits_amount(intervals, sequence):
-        """Вычисляется количество элементов выборки, попавших в каждый интервал.
-        Аргументы:
-            intervals - список границ интервалов, list;
-            sequence - выборка, list числовых значений.
-        Вывод:
-            frequency - список количества попаданий для каждого интервала, list of int.
-
-        """
-        frequency = numpy.zeros(len(intervals) - 1)
-        length = len(sequence)
-        for i in range(length):
-            for j in range(len(intervals) - 1):
-                if (intervals[j] <= sequence[i] < intervals[j + 1]):
-                    frequency[j] += 1
-
-        return frequency
-
-    def calculate_probability_intervals(intervals, a, b):
-        """Вычисляется вероятность попадания слчайной величины в заданные
-        интервалы при равномерном распределении.
-        
-        Аргументы:
-            intervals - список границ интервалов, list;
-            a - нижняя граница функции равномерного распределения;
-            b - верхняя граница функции равномерного распределения.
-        Вывод:
-            probabil - список вероятностей для каждого интервала, list of float.
-
-        """
-        probabil = []
-        for i in range(len(intervals) - 1):
-            probabil.append((intervals[i + 1] - intervals[i]) / (b - a))
-        return probabil
 
     def draw_histogram(frequency, intervals):
         """Рисует гистограмму частот.
@@ -649,19 +596,32 @@ def chisqr_test(sequence, mod, alpha, intervals_amount, drawing_graph, wfile):
         wfile.write('Успешность прохождения по a2: %s\n' % (hit_a2))
         wfile.write('Значение a2: %s\n' % (a2))
 
-    intervals = create_intervals(mod, intervals_amount)
-    hits_amount = calculate_hits_amount(intervals, sequence)
+    # разбиваем отрезок от 0 до mod на интервалы
+    K = intervals_amount
+    lngth = mod/K   
+    intervals = [x * lngth for x in range(0, K+1)]
+    
+    #определяем количество попаданий в интервалы
+    hits_amount = []    
+    for a, b in zip(intervals[:-1], intervals[1:]):
+            count = sum([a <= x < b for x in sequence])
+            hits_amount.append(count)
 
-    probabil = calculate_probability_intervals(intervals, 0, mod)
+    len_seq = len(sequence)
+
+    # Вычисляется вероятность попадания слчайной величины в заданные
+    # интервалы при равномерном распределении.
+    def calc_probs(bott, top, intervals):
+        return [(x - y) / (top - bott) for x, y in zip(intervals[1:], intervals[:-1])]
+
+    probabils = calc_probs(0, mod, intervals)
 
     if(drawing_graph is True):
         draw_histogram(hits_amount, intervals)
 
     # вычисляется статистика
-    addition = 0
-    for i in range(intervals_amount):
-        addition += (hits_amount[i] / len(sequence) -
-                     probabil[i]) ** 2 / probabil[i]
+    
+    addition = sum([(hits / len_seq - probs)**2 / probs for hits, probs in zip(hits_amount, probabils)])
     S = len(sequence) * addition
 
     # вычисляется a2
